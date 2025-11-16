@@ -4,9 +4,6 @@ import { RouterView } from 'vue-router'
 
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Главная</router-link>
-    </nav>
     <main>
       <RouterView />
     </main>
