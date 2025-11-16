@@ -44,12 +44,6 @@
           <span v-else>Войти</span>
         </button>
       </form>
-      
-      <div class="login-hint">
-        <p>Тестовые учетные данные:</p>
-        <p><strong>Email:</strong> admin@test.com</p>
-        <p><strong>Пароль:</strong> password</p>
-      </div>
     </div>
   </div>
 </template>
