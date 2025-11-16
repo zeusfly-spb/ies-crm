@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             \App\Http\Middleware\CorsMiddleware::class,
         ]);
-        $middleware->statefulApi();
+        // $middleware->statefulApi(); // Используем токен-аутентификацию вместо stateful API
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
