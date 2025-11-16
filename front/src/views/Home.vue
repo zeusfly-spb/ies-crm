@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <h1>IES CRM - Список товаров</h1>
+    <div class="header">
+      <h1>IES CRM - Список товаров</h1>
+      <button @click="handleLogout" class="logout-btn">Выйти</button>
+    </div>
     
     <div v-if="goodsStore.loading" class="loading">
       Загрузка товаров...
@@ -80,26 +83,60 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useGoodsStore } from '../stores/goods'
+import { useAuthStore } from '../stores/auth'
 
 const goodsStore = useGoodsStore()
+const authStore = useAuthStore()
 const viewMode = ref('grid')
 
-onMounted(() => {
+onMounted(async () => {
+  // Проверяем авторизацию при загрузке
+  if (authStore.token && !authStore.user) {
+    await authStore.fetchUser()
+  }
   goodsStore.fetchGoods()
 })
+
+async function handleLogout() {
+  await authStore.logout()
+}
 </script>
 
 <style scoped>
 .home {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 h1 {
   color: #42b883;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
 }
 
 .loading,
@@ -123,23 +160,37 @@ h1 {
 
 .goods-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
 }
 
+@media (max-width: 1200px) {
+  .goods-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .goods-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .good-card {
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 2px solid #e8f5e9;
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .good-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  border-color: #42b883;
+  box-shadow: 0 8px 20px rgba(66, 184, 131, 0.25);
 }
 
 .good-name {
@@ -223,16 +274,17 @@ h1 {
   justify-content: space-between;
   align-items: center;
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 2px solid #e8f5e9;
+  border-radius: 12px;
   padding: 1rem 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
 .good-list-item:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateX(4px);
   border-color: #42b883;
+  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.25);
 }
 
 .list-item-content {
