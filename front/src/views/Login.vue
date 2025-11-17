@@ -93,6 +93,29 @@ async function handleLogin() {
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+  
+  .login-card {
+    padding: 2rem;
+    transform: translateY(0);
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0.75rem;
+  }
+  
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+}
+
 .login-card:hover {
   border-color: #42b883;
   box-shadow: 0 8px 30px rgba(66, 184, 131, 0.25);
@@ -111,6 +134,28 @@ async function handleLogin() {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .login-title {
+    font-size: 1.75rem;
+  }
+  
+  .login-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-title {
+    font-size: 1.5rem;
+  }
+  
+  .login-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
 }
 
 .login-form {
@@ -136,6 +181,13 @@ async function handleLogin() {
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+@media (max-width: 480px) {
+  .form-input {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+  }
 }
 
 .form-input:focus {
@@ -170,6 +222,13 @@ async function handleLogin() {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
+}
+
+@media (max-width: 480px) {
+  .login-button {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+  }
 }
 
 .login-button:hover:not(:disabled) {

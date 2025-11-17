@@ -110,17 +110,53 @@ async function handleLogout() {
   width: 100%;
 }
 
+@media (max-width: 768px) {
+  .home {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home {
+    padding: 0.75rem;
+  }
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 h1 {
   color: #42b883;
   margin: 0;
   font-size: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    margin-bottom: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.25rem;
+  }
 }
 
 .logout-btn {
@@ -133,6 +169,15 @@ h1 {
   font-size: 0.9rem;
   font-weight: 500;
   transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .logout-btn {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+  }
 }
 
 .logout-btn:hover {
@@ -145,6 +190,24 @@ h1 {
   text-align: center;
   padding: 2rem;
   font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .loading,
+  .error,
+  .empty {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading,
+  .error,
+  .empty {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
 }
 
 .error {
@@ -187,6 +250,19 @@ h1 {
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .good-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .good-card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+}
+
 .good-card:hover {
   transform: translateY(-4px);
   border-color: #42b883;
@@ -200,11 +276,37 @@ h1 {
   font-weight: 600;
 }
 
+@media (max-width: 768px) {
+  .good-name {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .good-name {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .good-comment {
   color: #7f8c8d;
   margin-bottom: 1rem;
   line-height: 1.5;
   font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .good-comment {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .good-comment {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
 }
 
 .good-count {
@@ -226,6 +328,18 @@ h1 {
   font-weight: 600;
 }
 
+@media (max-width: 768px) {
+  .count-value {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .count-value {
+    font-size: 0.95rem;
+  }
+}
+
 .view-controls {
   display: flex;
   justify-content: flex-end;
@@ -234,6 +348,13 @@ h1 {
   padding: 0.5rem;
   background: #f8f9fa;
   border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .view-controls {
+    margin-bottom: 1rem;
+    padding: 0.4rem;
+  }
 }
 
 .view-btn {
@@ -281,6 +402,23 @@ h1 {
   transition: all 0.3s ease;
 }
 
+@media (max-width: 768px) {
+  .good-list-item {
+    padding: 0.875rem 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .good-list-item {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .good-list-item:hover {
   transform: translateX(4px);
   border-color: #42b883;
@@ -299,6 +437,19 @@ h1 {
   font-weight: 600;
 }
 
+@media (max-width: 768px) {
+  .list-item-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-item-name {
+    font-size: 0.95rem;
+    margin-bottom: 0.375rem;
+  }
+}
+
 .list-item-comment {
   color: #7f8c8d;
   margin: 0;
@@ -309,9 +460,39 @@ h1 {
   white-space: nowrap;
 }
 
+@media (max-width: 768px) {
+  .list-item-comment {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-item-comment {
+    font-size: 0.8rem;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+}
+
 .list-item-count {
   margin-left: 1.5rem;
   flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .list-item-count {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-item-count {
+    margin-left: 0;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e0e0e0;
+  }
 }
 </style>
 
