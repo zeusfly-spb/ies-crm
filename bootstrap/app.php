@@ -15,7 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             \App\Http\Middleware\CorsMiddleware::class,
         ]);
-        $middleware->statefulApi();
+        // Полностью отключаем CSRF проверку для всех маршрутов
+        $middleware->validateCsrfTokens(except: [
+            '*', // Исключаем все маршруты из CSRF проверки
+        ]);
+        // Убираем statefulApi чтобы не было CSRF проверки
+        // $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
