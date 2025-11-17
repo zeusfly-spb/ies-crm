@@ -2,7 +2,10 @@
   <div class="home">
     <div class="header">
       <h1>IES CRM - Список товаров</h1>
-      <button @click="handleLogout" class="logout-btn">Выйти</button>
+      <div class="header-actions">
+        <button @click="goToManagement" class="management-btn">Управление товарами</button>
+        <button @click="handleLogout" class="logout-btn">Выйти</button>
+      </div>
     </div>
     
     <div v-if="goodsStore.loading" class="loading">
@@ -143,9 +146,11 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGoodsStore } from '../stores/goods'
 import { useAuthStore } from '../stores/auth'
 
+const router = useRouter()
 const goodsStore = useGoodsStore()
 const authStore = useAuthStore()
 const viewMode = ref('grid')
@@ -262,6 +267,10 @@ async function handleSubmit() {
   }
 }
 
+function goToManagement() {
+  router.push('/goods')
+}
+
 async function handleLogout() {
   await authStore.logout()
 }
@@ -296,6 +305,29 @@ async function handleLogout() {
   gap: 1rem;
 }
 
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.management-btn {
+  padding: 0.5rem 1rem;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.management-btn:hover {
+  background: #2980b9;
+}
+
 h1 {
   color: #42b883;
   margin: 0;
@@ -317,6 +349,16 @@ h1 {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 1rem;
+  }
+  
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .management-btn,
+  .logout-btn {
+    width: 100%;
   }
   
   h1 {

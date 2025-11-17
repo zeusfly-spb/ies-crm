@@ -19,9 +19,29 @@ class GoodController extends Controller
     }
 
     /**
-     * Обновить количество товара
+     * Создать новый товар
      */
-    public function update(Request $request, $id): JsonResponse
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'comment' => 'nullable|string',
+            'count' => 'required|integer|min:0',
+        ]);
+
+        $good = Good::create([
+            'name' => $request->name,
+            'comment' => $request->comment ?? '',
+            'count' => $request->count ?? 0,
+        ]);
+
+        return response()->json($good, 201);
+    }
+
+    /**
+     * Обновить количество товара (приход/расход)
+     */
+    public function updateCount(Request $request, $id): JsonResponse
     {
         $request->validate([
             'type' => 'required|in:income,expense',
@@ -45,6 +65,39 @@ class GoodController extends Controller
         $good->save();
 
         return response()->json($good);
+    }
+
+    /**
+     * Обновить данные товара
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'comment' => 'nullable|string',
+            'count' => 'required|integer|min:0',
+        ]);
+
+        $good = Good::findOrFail($id);
+        
+        $good->update([
+            'name' => $request->name,
+            'comment' => $request->comment ?? '',
+            'count' => $request->count,
+        ]);
+
+        return response()->json($good);
+    }
+
+    /**
+     * Удалить товар
+     */
+    public function destroy($id): JsonResponse
+    {
+        $good = Good::findOrFail($id);
+        $good->delete();
+
+        return response()->json(['message' => 'Товар успешно удален']);
     }
 }
 

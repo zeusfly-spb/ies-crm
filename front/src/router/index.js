@@ -3,6 +3,7 @@ import pinia from '../stores'
 import { useAuthStore } from '../stores/auth'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import GoodsManagement from '../views/GoodsManagement.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Home,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/goods',
+      name: 'goods',
+      component: GoodsManagement,
       meta: { requiresAuth: true }
     }
   ]

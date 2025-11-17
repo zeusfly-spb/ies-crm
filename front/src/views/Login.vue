@@ -16,7 +16,7 @@
             v-model="email"
             type="email"
             required
-            placeholder="admin@test.com"
+            placeholder="Адрес электронной почты"
             class="form-input"
             :disabled="authStore.loading"
           />
@@ -29,7 +29,7 @@
             v-model="password"
             type="password"
             required
-            placeholder="password"
+            placeholder="Пароль"
             class="form-input"
             :disabled="authStore.loading"
           />
