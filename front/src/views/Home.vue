@@ -50,6 +50,7 @@
             v-for="good in goodsStore.goods" 
             :key="good.id" 
             class="good-card"
+            @click="openModal(good)"
           >
             <h3 class="good-name">{{ good.name }}</h3>
             <p class="good-comment">{{ good.comment }}</p>
@@ -65,6 +66,7 @@
             v-for="good in goodsStore.goods" 
             :key="good.id" 
             class="good-list-item"
+            @click="openModal(good)"
           >
             <div class="list-item-content">
               <h3 class="list-item-name">{{ good.name }}</h3>
@@ -77,17 +79,112 @@
         </div>
       </div>
     </div>
+
+    <!-- Модальное окно для изменения количества -->
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>{{ selectedGood?.name }}</h2>
+          <button @click="closeModal" class="modal-close">&times;</button>
+        </div>
+        
+        <div v-if="!operationType" class="operation-select">
+          <button 
+            @click="operationType = 'income'" 
+            class="operation-btn income-btn"
+          >
+            Приход
+          </button>
+          <button 
+            @click="operationType = 'expense'" 
+            class="operation-btn expense-btn"
+          >
+            Расход
+          </button>
+        </div>
+        
+        <div v-else class="amount-input-section">
+          <div class="form-group">
+            <label>
+              {{ operationType === 'income' ? 'Количество для прихода' : 'Количество для расхода' }}
+            </label>
+            <input
+              v-model.number="amount"
+              type="number"
+              min="1"
+              :max="operationType === 'expense' ? selectedGood?.count : undefined"
+              class="amount-input"
+              placeholder="Введите количество"
+              @keyup.enter="handleSubmit"
+            />
+            <div v-if="validationError" class="validation-error">
+              {{ validationError }}
+            </div>
+            <div v-if="operationType === 'expense' && selectedGood" class="available-count">
+              Доступно: {{ selectedGood.count }}
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button @click="resetForm" class="cancel-btn">Отмена</button>
+            <button 
+              @click="handleSubmit" 
+              :disabled="isSubmitDisabled"
+              class="submit-btn"
+            >
+              ОК
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useGoodsStore } from '../stores/goods'
 import { useAuthStore } from '../stores/auth'
 
 const goodsStore = useGoodsStore()
 const authStore = useAuthStore()
 const viewMode = ref('grid')
+const showModal = ref(false)
+const selectedGood = ref(null)
+const operationType = ref(null) // 'income' или 'expense'
+const amount = ref(null)
+const validationError = ref('')
+const isSubmitting = ref(false)
+
+const availableCount = computed(() => {
+  return selectedGood.value?.count || 0
+})
+
+// Валидация в реальном времени
+watch([amount, operationType], () => {
+  if (amount.value !== null && amount.value !== '' && !Number.isNaN(amount.value)) {
+    validateAmount()
+  } else {
+    validationError.value = ''
+  }
+})
+
+const isAmountProvided = computed(() => {
+  return (
+    amount.value !== null &&
+    amount.value !== '' &&
+    !Number.isNaN(amount.value)
+  )
+})
+
+const isSubmitDisabled = computed(() => {
+  return (
+    isSubmitting.value ||
+    !operationType.value ||
+    !isAmountProvided.value ||
+    Boolean(validationError.value)
+  )
+})
 
 onMounted(async () => {
   // Проверяем авторизацию при загрузке
@@ -96,6 +193,74 @@ onMounted(async () => {
   }
   goodsStore.fetchGoods()
 })
+
+function openModal(good) {
+  selectedGood.value = good
+  showModal.value = true
+  operationType.value = null
+  amount.value = null
+  validationError.value = ''
+}
+
+function closeModal() {
+  showModal.value = false
+  resetForm()
+}
+
+function resetForm() {
+  operationType.value = null
+  amount.value = null
+  validationError.value = ''
+}
+
+function validateAmount() {
+  validationError.value = ''
+  
+  if (amount.value === null || amount.value === '' || isNaN(amount.value) || !isFinite(amount.value)) {
+    validationError.value = 'Введите корректное количество'
+    return false
+  }
+  
+  const numAmount = Number(amount.value)
+  
+  if (numAmount <= 0) {
+    validationError.value = 'Количество должно быть больше 0'
+    return false
+  }
+  
+  if (!Number.isInteger(numAmount)) {
+    validationError.value = 'Количество должно быть целым числом'
+    return false
+  }
+  
+  if (operationType.value === 'expense' && numAmount > availableCount.value) {
+    validationError.value = `Недостаточно товара. Доступно: ${availableCount.value}`
+    return false
+  }
+  
+  return true
+}
+
+async function handleSubmit() {
+  if (!validateAmount()) {
+    return
+  }
+  
+  if (isSubmitting.value) {
+    return
+  }
+  
+  isSubmitting.value = true
+  
+  try {
+    await goodsStore.updateGood(selectedGood.value.id, operationType.value, amount.value)
+    closeModal()
+  } catch (error) {
+    validationError.value = error.message || 'Ошибка при обновлении товара'
+  } finally {
+    isSubmitting.value = false
+  }
+}
 
 async function handleLogout() {
   await authStore.logout()
@@ -248,6 +413,7 @@ h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   position: relative;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -400,6 +566,7 @@ h1 {
   padding: 1rem 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -492,6 +659,252 @@ h1 {
     width: 100%;
     padding-top: 0.5rem;
     border-top: 1px solid #e0e0e0;
+  }
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: #f0f0f0;
+  color: #2c3e50;
+}
+
+.operation-select {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  justify-content: center;
+}
+
+.operation-btn {
+  flex: 1;
+  padding: 1rem 2rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+}
+
+.income-btn {
+  color: #27ae60;
+  border-color: #27ae60;
+}
+
+.income-btn:hover {
+  background: #27ae60;
+  color: #fff;
+}
+
+.expense-btn {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.expense-btn:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.amount-input-section {
+  padding: 1.5rem;
+}
+
+.amount-input-section .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.amount-input-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.amount-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: #42b883;
+  box-shadow: 0 0 0 3px rgba(66, 184, 131, 0.1);
+}
+
+.available-count {
+  margin-top: 0.5rem;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.validation-error {
+  margin-top: 0.5rem;
+  color: #e74c3c;
+  font-size: 0.9rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-btn,
+.submit-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn {
+  background: #f0f0f0;
+  color: #2c3e50;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.submit-btn {
+  background: #42b883;
+  color: #fff;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #35a372;
+}
+
+.submit-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 90%;
+  }
+  
+  .modal-header {
+    padding: 1.25rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .operation-select {
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+  }
+  
+  .operation-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .amount-input-section {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .modal-content {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  
+  .modal-header {
+    padding: 1rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .operation-select {
+    padding: 1.25rem 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .amount-input-section {
+    padding: 1rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
   }
 }
 </style>
