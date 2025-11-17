@@ -721,6 +721,18 @@ async function handleLogout() {
 }
 
 /* Адаптивность */
+@media (max-width: 1024px) {
+  .goods-table th,
+  .goods-table td {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .comment-cell {
+    max-width: 200px;
+  }
+}
+
 @media (max-width: 768px) {
   .goods-management {
     padding: 1rem;
@@ -739,6 +751,15 @@ async function handleLogout() {
     align-items: flex-start;
   }
 
+  .section-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 0.875rem;
+  }
+
   .goods-table {
     font-size: 0.9rem;
   }
@@ -751,6 +772,52 @@ async function handleLogout() {
   .comment-cell {
     max-width: 150px;
   }
+
+  .form-header {
+    padding: 1.25rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .goods-form {
+    padding: 1.25rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+  }
+
+  .modal-content {
+    max-width: 90%;
+  }
+
+  .modal-header {
+    padding: 1.25rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.15rem;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+  }
+
+  .modal-actions {
+    padding: 1.25rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -761,41 +828,204 @@ async function handleLogout() {
   .header {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 1rem;
   }
 
   .header-actions {
     width: 100%;
     flex-direction: column;
+    gap: 0.75rem;
   }
 
   .back-btn,
   .logout-btn {
     width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
   }
 
   .header h1 {
     font-size: 1.25rem;
+    margin-bottom: 0.5rem;
   }
 
-  .form-header h2 {
-    font-size: 1.25rem;
+  .section-header {
+    margin-bottom: 1rem;
   }
 
   .section-header h2 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .add-btn {
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .form-header {
+    padding: 1rem;
+  }
+
+  .form-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .close-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 1.75rem;
+  }
+
+  .goods-form {
+    padding: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .form-error {
+    font-size: 0.85rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    padding: 0.7rem;
+    font-size: 0.95rem;
   }
 
   .goods-table-container {
-    overflow-x: scroll;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .goods-table {
     min-width: 600px;
+    font-size: 0.85rem;
   }
 
-  .form-actions,
+  .goods-table th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .goods-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .name-cell {
+    font-size: 0.9rem;
+  }
+
+  .comment-cell {
+    max-width: 120px;
+    font-size: 0.8rem;
+  }
+
+  .count-cell {
+    font-size: 0.9rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    font-size: 1.1rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 1.75rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-body p {
+    font-size: 0.9rem;
+    margin: 0.4rem 0;
+  }
+
   .modal-actions {
     flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .delete-confirm-btn {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .loading,
+  .error,
+  .empty {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .goods-management {
+    padding: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.1rem;
+  }
+
+  .section-header h2 {
+    font-size: 1rem;
+  }
+
+  .form-header h2 {
+    font-size: 1rem;
+  }
+
+  .goods-table {
+    font-size: 0.8rem;
+  }
+
+  .goods-table th,
+  .goods-table td {
+    padding: 0.5rem 0.4rem;
   }
 }
 </style>
