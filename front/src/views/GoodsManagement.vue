@@ -92,35 +92,72 @@
         Товары не найдены. Добавьте первый товар.
       </div>
 
-      <div v-else class="goods-table-container">
-        <table class="goods-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Название</th>
-              <th>Комментарий</th>
-              <th>Количество</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="good in goodsStore.goods" :key="good.id">
-              <td>{{ good.id }}</td>
-              <td class="name-cell">{{ good.name }}</td>
-              <td class="comment-cell">{{ good.comment || '-' }}</td>
-              <td class="count-cell">{{ good.count }}</td>
-              <td class="actions-cell">
-                <button @click="startEditing(good)" class="edit-btn" title="Редактировать">
+      <template v-else>
+        <!-- Таблица для десктопа -->
+        <div class="goods-table-container desktop-table">
+          <table class="goods-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Комментарий</th>
+                <th>Количество</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="good in goodsStore.goods" :key="good.id">
+                <td>{{ good.id }}</td>
+                <td class="name-cell">{{ good.name }}</td>
+                <td class="comment-cell">{{ good.comment || '-' }}</td>
+                <td class="count-cell">{{ good.count }}</td>
+                <td class="actions-cell">
+                  <button @click="startEditing(good)" class="edit-btn" title="Редактировать">
+                    ✏️
+                  </button>
+                  <button @click="confirmDelete(good)" class="delete-btn" title="Удалить">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Карточки для мобильных -->
+        <div class="goods-cards mobile-cards">
+          <div 
+            v-for="good in goodsStore.goods" 
+            :key="good.id" 
+            class="good-card"
+          >
+            <div class="card-header">
+              <div class="card-title-section">
+                <h3 class="card-name">{{ good.name }}</h3>
+                <span class="card-id">ID: {{ good.id }}</span>
+              </div>
+              <div class="card-actions">
+                <button @click="startEditing(good)" class="card-edit-btn" title="Редактировать">
                   ✏️
                 </button>
-                <button @click="confirmDelete(good)" class="delete-btn" title="Удалить">
+                <button @click="confirmDelete(good)" class="card-delete-btn" title="Удалить">
                   🗑️
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-row">
+                <span class="card-label">Комментарий:</span>
+                <span class="card-value">{{ good.comment || '-' }}</span>
+              </div>
+              <div class="card-row">
+                <span class="card-label">Количество:</span>
+                <span class="card-count">{{ good.count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
 
     <!-- Модальное окно подтверждения удаления -->
@@ -542,6 +579,115 @@ async function handleLogout() {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Карточки для мобильных */
+.goods-cards {
+  display: none;
+}
+
+.good-card {
+  background: #fff;
+  border: 2px solid #e8f5e9;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.good-card:hover {
+  border-color: #42b883;
+  box-shadow: 0 4px 12px rgba(66, 184, 131, 0.25);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.card-title-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-name {
+  margin: 0 0 0.25rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+
+.card-id {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+}
+
+.card-edit-btn,
+.card-delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.card-edit-btn:hover {
+  background: #e8f5e9;
+  transform: scale(1.1);
+}
+
+.card-delete-btn:hover {
+  background: #fee;
+  transform: scale(1.1);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.card-label {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.card-value {
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-align: right;
+  word-wrap: break-word;
+  flex: 1;
+}
+
+.card-count {
+  color: #42b883;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .goods-table {
   width: 100%;
   border-collapse: collapse;
@@ -734,6 +880,17 @@ async function handleLogout() {
 }
 
 @media (max-width: 768px) {
+  /* Показываем карточки, скрываем таблицу */
+  .desktop-table {
+    display: none;
+  }
+  
+  .mobile-cards {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
   .goods-management {
     padding: 1rem;
   }
@@ -912,43 +1069,49 @@ async function handleLogout() {
     font-size: 0.95rem;
   }
 
-  .goods-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .good-card {
+    padding: 0.875rem;
+    margin-bottom: 0.875rem;
   }
 
-  .goods-table {
-    min-width: 600px;
-    font-size: 0.85rem;
+  .card-header {
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
   }
 
-  .goods-table th {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.85rem;
+  .card-name {
+    font-size: 1rem;
   }
 
-  .goods-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .name-cell {
-    font-size: 0.9rem;
-  }
-
-  .comment-cell {
-    max-width: 120px;
+  .card-id {
     font-size: 0.8rem;
   }
 
-  .count-cell {
-    font-size: 0.9rem;
+  .card-actions {
+    gap: 0.4rem;
+    margin-left: 0.5rem;
   }
 
-  .edit-btn,
-  .delete-btn {
+  .card-edit-btn,
+  .card-delete-btn {
     font-size: 1.1rem;
     padding: 0.2rem 0.4rem;
+  }
+
+  .card-body {
+    gap: 0.625rem;
+  }
+
+  .card-label {
+    font-size: 0.85rem;
+  }
+
+  .card-value {
+    font-size: 0.85rem;
+  }
+
+  .card-count {
+    font-size: 0.95rem;
   }
 
   .modal-overlay {
@@ -1019,13 +1182,29 @@ async function handleLogout() {
     font-size: 1rem;
   }
 
-  .goods-table {
+  .good-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-name {
+    font-size: 0.95rem;
+  }
+
+  .card-id {
+    font-size: 0.75rem;
+  }
+
+  .card-label {
     font-size: 0.8rem;
   }
 
-  .goods-table th,
-  .goods-table td {
-    padding: 0.5rem 0.4rem;
+  .card-value {
+    font-size: 0.8rem;
+  }
+
+  .card-count {
+    font-size: 0.9rem;
   }
 }
 </style>
