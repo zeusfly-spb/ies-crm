@@ -145,42 +145,42 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useGoodsStore } from '../stores/goods'
-import { useAuthStore } from '../stores/auth'
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useGoodsStore } from '../stores/goods';
+import { useAuthStore } from '../stores/auth';
 
-const router = useRouter()
-const goodsStore = useGoodsStore()
-const authStore = useAuthStore()
-const viewMode = ref('grid')
-const showModal = ref(false)
-const selectedGood = ref(null)
-const operationType = ref(null) // 'income' или 'expense'
-const amount = ref(null)
-const validationError = ref('')
-const isSubmitting = ref(false)
+const router = useRouter();
+const goodsStore = useGoodsStore();
+const authStore = useAuthStore();
+const viewMode = ref('grid');
+const showModal = ref(false);
+const selectedGood = ref(null);
+const operationType = ref(null); // 'income' или 'expense'
+const amount = ref(null);
+const validationError = ref('');
+const isSubmitting = ref(false);
 
 const availableCount = computed(() => {
-  return selectedGood.value?.count || 0
-})
+  return selectedGood.value?.count || 0;
+});
 
 // Валидация в реальном времени
 watch([amount, operationType], () => {
   if (amount.value !== null && amount.value !== '' && !Number.isNaN(amount.value)) {
-    validateAmount()
+    validateAmount();
   } else {
-    validationError.value = ''
+    validationError.value = '';
   }
-})
+});
 
 const isAmountProvided = computed(() => {
   return (
     amount.value !== null &&
     amount.value !== '' &&
     !Number.isNaN(amount.value)
-  )
-})
+  );
+});
 
 const isSubmitDisabled = computed(() => {
   return (
@@ -188,91 +188,91 @@ const isSubmitDisabled = computed(() => {
     !operationType.value ||
     !isAmountProvided.value ||
     Boolean(validationError.value)
-  )
-})
+  );
+});
 
 onMounted(async () => {
   // Проверяем авторизацию при загрузке
   if (authStore.token && !authStore.user) {
-    await authStore.fetchUser()
+    await authStore.fetchUser();
   }
-  goodsStore.fetchGoods()
-})
+  goodsStore.fetchGoods();
+});
 
 function openModal(good) {
-  selectedGood.value = good
-  showModal.value = true
-  operationType.value = null
-  amount.value = null
-  validationError.value = ''
+  selectedGood.value = good;
+  showModal.value = true;
+  operationType.value = null;
+  amount.value = null;
+  validationError.value = '';
 }
 
 function closeModal() {
-  showModal.value = false
-  resetForm()
+  showModal.value = false;
+  resetForm();
 }
 
 function resetForm() {
-  operationType.value = null
-  amount.value = null
-  validationError.value = ''
+  operationType.value = null;
+  amount.value = null;
+  validationError.value = '';
 }
 
 function validateAmount() {
-  validationError.value = ''
+  validationError.value = '';
   
   if (amount.value === null || amount.value === '' || isNaN(amount.value) || !isFinite(amount.value)) {
-    validationError.value = 'Введите корректное количество'
-    return false
+    validationError.value = 'Введите корректное количество';
+    return false;
   }
   
-  const numAmount = Number(amount.value)
+  const numAmount = Number(amount.value);
   
   if (numAmount <= 0) {
-    validationError.value = 'Количество должно быть больше 0'
-    return false
+    validationError.value = 'Количество должно быть больше 0';
+    return false;
   }
   
   if (!Number.isInteger(numAmount)) {
-    validationError.value = 'Количество должно быть целым числом'
-    return false
+    validationError.value = 'Количество должно быть целым числом';
+    return false;
   }
   
   if (operationType.value === 'expense' && numAmount > availableCount.value) {
-    validationError.value = `Недостаточно товара. Доступно: ${availableCount.value}`
-    return false
+    validationError.value = `Недостаточно товара. Доступно: ${availableCount.value}`;
+    return false;
   }
   
-  return true
+  return true;
 }
 
 async function handleSubmit() {
   if (!validateAmount()) {
-    return
+    return;
   }
   
   if (isSubmitting.value) {
-    return
+    return;
   }
   
-  isSubmitting.value = true
+  isSubmitting.value = true;
   
   try {
-    await goodsStore.updateGood(selectedGood.value.id, operationType.value, amount.value)
-    closeModal()
+    await goodsStore.updateGood(selectedGood.value.id, operationType.value, amount.value);
+    closeModal();
   } catch (error) {
-    validationError.value = error.message || 'Ошибка при обновлении товара'
+    validationError.value = error.message || 'Ошибка при обновлении товара';
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
 }
 
 function goToManagement() {
-  router.push('/goods')
+  router.push('/goods');
 }
 
 async function handleLogout() {
-  await authStore.logout()
+  await authStore.logout();
 }
 </script>
 

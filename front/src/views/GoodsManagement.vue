@@ -184,80 +184,80 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { useGoodsStore } from '../stores/goods'
-import { useAuthStore } from '../stores/auth'
+import { ref, onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useGoodsStore } from '../stores/goods';
+import { useAuthStore } from '../stores/auth';
 
-const router = useRouter()
-const goodsStore = useGoodsStore()
-const authStore = useAuthStore()
+const router = useRouter();
+const goodsStore = useGoodsStore();
+const authStore = useAuthStore();
 
-const isCreating = ref(false)
-const isEditing = ref(false)
-const isSubmitting = ref(false)
-const isDeleting = ref(false)
-const formError = ref('')
-const showDeleteModal = ref(false)
-const goodToDelete = ref(null)
+const isCreating = ref(false);
+const isEditing = ref(false);
+const isSubmitting = ref(false);
+const isDeleting = ref(false);
+const formError = ref('');
+const showDeleteModal = ref(false);
+const goodToDelete = ref(null);
 
 const formData = reactive({
   name: '',
   comment: '',
   count: 0
-})
+});
 
 onMounted(async () => {
   if (authStore.token && !authStore.user) {
-    await authStore.fetchUser()
+    await authStore.fetchUser();
   }
-  goodsStore.fetchGoods()
-})
+  goodsStore.fetchGoods();
+});
 
 function startCreating() {
-  isCreating.value = true
-  isEditing.value = false
-  resetForm()
+  isCreating.value = true;
+  isEditing.value = false;
+  resetForm();
 }
 
 function startEditing(good) {
-  isEditing.value = true
-  isCreating.value = false
-  formData.name = good.name
-  formData.comment = good.comment || ''
-  formData.count = good.count
-  formData.id = good.id
-  formError.value = ''
+  isEditing.value = true;
+  isCreating.value = false;
+  formData.name = good.name;
+  formData.comment = good.comment || '';
+  formData.count = good.count;
+  formData.id = good.id;
+  formError.value = '';
 }
 
 function cancelForm() {
-  isCreating.value = false
-  isEditing.value = false
-  resetForm()
+  isCreating.value = false;
+  isEditing.value = false;
+  resetForm();
 }
 
 function resetForm() {
-  formData.name = ''
-  formData.comment = ''
-  formData.count = 0
-  formData.id = null
-  formError.value = ''
+  formData.name = '';
+  formData.comment = '';
+  formData.count = 0;
+  formData.id = null;
+  formError.value = '';
 }
 
 async function handleSubmit() {
-  formError.value = ''
+  formError.value = '';
   
   if (!formData.name.trim()) {
-    formError.value = 'Название товара обязательно'
-    return
+    formError.value = 'Название товара обязательно';
+    return;
   }
 
   if (formData.count < 0) {
-    formError.value = 'Количество не может быть отрицательным'
-    return
+    formError.value = 'Количество не может быть отрицательным';
+    return;
   }
 
-  isSubmitting.value = true
+  isSubmitting.value = true;
 
   try {
     if (isEditing.value) {
@@ -265,55 +265,55 @@ async function handleSubmit() {
         name: formData.name.trim(),
         comment: formData.comment.trim(),
         count: formData.count
-      })
+      });
     } else {
       await goodsStore.createGood({
         name: formData.name.trim(),
         comment: formData.comment.trim(),
         count: formData.count
-      })
+      });
     }
     
-    cancelForm()
+    cancelForm();
   } catch (error) {
-    formError.value = error.message || 'Ошибка при сохранении товара'
+    formError.value = error.message || 'Ошибка при сохранении товара';
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
 }
 
 function confirmDelete(good) {
-  goodToDelete.value = good
-  showDeleteModal.value = true
+  goodToDelete.value = good;
+  showDeleteModal.value = true;
 }
 
 function cancelDelete() {
-  showDeleteModal.value = false
-  goodToDelete.value = null
+  showDeleteModal.value = false;
+  goodToDelete.value = null;
 }
 
 async function handleDelete() {
-  if (!goodToDelete.value) return
+  if (!goodToDelete.value) return;
 
-  isDeleting.value = true
+  isDeleting.value = true;
 
   try {
-    await goodsStore.deleteGood(goodToDelete.value.id)
-    cancelDelete()
+    await goodsStore.deleteGood(goodToDelete.value.id);
+    cancelDelete();
   } catch (error) {
-    formError.value = error.message || 'Ошибка при удалении товара'
-    cancelDelete()
+    formError.value = error.message || 'Ошибка при удалении товара';
+    cancelDelete();
   } finally {
-    isDeleting.value = false
+    isDeleting.value = false;
   }
 }
 
 function goHome() {
-  router.push('/')
+  router.push('/');
 }
 
 async function handleLogout() {
-  await authStore.logout()
+  await authStore.logout();
 }
 </script>
 

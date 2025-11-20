@@ -49,20 +49,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
-const email = ref('')
-const password = ref('')
+const email = ref('');
+const password = ref('');
 
 async function handleLogin() {
   try {
-    await authStore.login(email.value, password.value)
-    router.push('/')
+    await authStore.login(email.value, password.value);
+    router.push('/');
   } catch (error) {
     // Ошибка уже обработана в store
   }

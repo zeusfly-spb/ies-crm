@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import pinia from '../stores'
-import { useAuthStore } from '../stores/auth'
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import GoodsManagement from '../views/GoodsManagement.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import pinia from '../stores';
+import { useAuthStore } from '../stores/auth';
+import Home from '../views/Home.vue';
+import Login from '../views/Login.vue';
+import GoodsManagement from '../views/GoodsManagement.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,21 +30,21 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore(pinia)
+  const authStore = useAuthStore(pinia);
   
   // Если есть токен, но нет пользователя, пытаемся загрузить пользователя
   if (authStore.token && !authStore.user) {
-    await authStore.fetchUser()
+    await authStore.fetchUser();
   }
   
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login')
+    next('/login');
   } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    next('/')
+    next('/');
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;
 
