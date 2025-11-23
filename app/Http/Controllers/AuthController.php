@@ -22,7 +22,19 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!$user) {
+                return response()->json([
+                    'message' => 'Неверные учетные данные.',
+                    'errors' => [
+                        'email' => ['Неверные учетные данные.']
+                    ]
+                ], 422);
+            }
+
+            // Получаем оригинальный хеш пароля из базы данных
+            $passwordHash = $user->getOriginal('password') ?? $user->password;
+            
+            if (!Hash::check($request->password, $passwordHash)) {
                 return response()->json([
                     'message' => 'Неверные учетные данные.',
                     'errors' => [
