@@ -3,6 +3,7 @@
     <div class="header">
       <h1>IES CRM - Список товаров</h1>
       <div class="header-actions">
+        <button @click="goToHistory" class="history-btn">История операций</button>
         <button @click="goToManagement" class="management-btn">Управление товарами</button>
         <button @click="handleLogout" class="logout-btn">Выйти</button>
       </div>
@@ -271,6 +272,10 @@ function goToManagement() {
   router.push('/goods');
 }
 
+function goToHistory() {
+  router.push('/operations');
+}
+
 async function handleLogout() {
   await authStore.logout();
 }
@@ -324,6 +329,23 @@ async function handleLogout() {
   white-space: nowrap;
 }
 
+.history-btn {
+  padding: 0.5rem 1rem;
+  background: #42b883;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.history-btn:hover {
+  background: #35a372;
+}
+
 .management-btn:hover {
   background: #2980b9;
 }
@@ -357,6 +379,7 @@ h1 {
   }
   
   .management-btn,
+  .history-btn,
   .logout-btn {
     width: 100%;
   }

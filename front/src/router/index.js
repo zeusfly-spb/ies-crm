@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth';
 import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import GoodsManagement from '../views/GoodsManagement.vue';
+import OperationHistory from '../views/OperationHistory.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,12 @@ const router = createRouter({
       path: '/goods',
       name: 'goods',
       component: GoodsManagement,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/operations',
+      name: 'operations',
+      component: OperationHistory,
       meta: { requiresAuth: true }
     }
   ]

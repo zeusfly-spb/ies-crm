@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GoodController;
+use App\Http\Controllers\OperationHistoryController;
 use Illuminate\Support\Facades\Route;
 
 // Публичные маршруты
@@ -16,5 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/goods/{id}/count', [GoodController::class, 'updateCount']);
     Route::put('/goods/{id}', [GoodController::class, 'update']);
     Route::delete('/goods/{id}', [GoodController::class, 'destroy']);
+    Route::get('/operations', [OperationHistoryController::class, 'index']);
 });
 

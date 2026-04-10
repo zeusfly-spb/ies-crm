@@ -3,6 +3,7 @@
     <div class="header">
       <h1>Управление товарами</h1>
       <div class="header-actions">
+        <button @click="goHistory" class="history-btn">История операций</button>
         <button @click="goHome" class="back-btn">На главную</button>
         <button @click="handleLogout" class="logout-btn">Выйти</button>
       </div>
@@ -312,6 +313,10 @@ function goHome() {
   router.push('/');
 }
 
+function goHistory() {
+  router.push('/operations');
+}
+
 async function handleLogout() {
   await authStore.logout();
 }
@@ -346,6 +351,7 @@ async function handleLogout() {
 }
 
 .back-btn,
+.history-btn,
 .logout-btn {
   padding: 0.5rem 1rem;
   border: none;
@@ -355,6 +361,15 @@ async function handleLogout() {
   font-weight: 500;
   transition: background-color 0.2s;
   white-space: nowrap;
+}
+
+.history-btn {
+  background: #42b883;
+  color: #fff;
+}
+
+.history-btn:hover {
+  background: #35a372;
 }
 
 .back-btn {
